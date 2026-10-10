@@ -26,10 +26,10 @@ export function SectionHeading({
       : "text-left";
 
   return (
-    <div className={`space-y-3 ${alignmentClass} ${className}`}>
+    <div className={`space-y-2 sm:space-y-3 ${alignmentClass} ${className}`}>
       {eyebrow && <EyebrowLabel dark={dark}>{eyebrow}</EyebrowLabel>}
       <h2
-        className={`font-serif text-3xl md:text-4xl lg:text-5xl font-light tracking-tight leading-[1.1] ${
+        className={`font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-tight leading-[1.12] break-words ${
           dark ? "text-[#F1EDE4]" : "text-[#171817]"
         }`}
       >
@@ -37,7 +37,7 @@ export function SectionHeading({
       </h2>
       {subtitle && (
         <p
-          className={`text-sm md:text-base max-w-2xl leading-relaxed font-light ${
+          className={`text-xs sm:text-sm md:text-base max-w-2xl leading-relaxed font-light ${
             dark ? "text-[#A7A6A0]" : "text-[#686760]"
           }`}
         >

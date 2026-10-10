@@ -30,6 +30,7 @@ html {
   scroll-behavior: smooth;
   background-color: var(--background);
   color: var(--foreground);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -39,6 +40,28 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  width: 100%;
+}
+
+/* Prevent iOS input auto-zoom by ensuring minimum 16px font-size on touch devices */
+@media (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Hide scrollbar for horizontal swipeable pill strips on mobile */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Touch highlights */
+a, button {
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Custom Editorial Scrollbar */

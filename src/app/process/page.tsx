@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 
 export default function ProcessPage() {
   return (
-    <div className="py-12 md:py-16 space-y-12">
+    <div className="py-8 sm:py-12 md:py-16 space-y-8 sm:space-y-12">
       <PageContainer>
-        <div className="space-y-6 max-w-3xl pb-8">
+        <div className="space-y-4 sm:space-y-6 max-w-3xl pb-4 sm:pb-8">
           <SectionHeading
             eyebrow="Sketchbook & Atelier"
             title="Studio Process & Research"

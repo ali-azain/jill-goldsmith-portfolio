@@ -15,38 +15,53 @@ export function SiteHeader() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 15);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Prevent background scrolling on mobile when menu is active
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
+  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-300 ${
-        scrolled
-          ? "bg-[#F1EDE4]/90 backdrop-blur-md border-b border-[#171817]/10 py-4"
-          : "bg-transparent py-6 md:py-8"
+      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+        scrolled || mobileMenuOpen
+          ? "bg-[#F1EDE4] border-b border-[#171817]/10 py-3.5 sm:py-4"
+          : "bg-[#F1EDE4] md:bg-transparent py-4 sm:py-6 md:py-8"
       }`}
     >
       <PageContainer>
         <div className="flex items-center justify-between">
+          {/* Typographic Wordmark */}
           <Link
             href="/"
-            className="group flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-[#995B43]"
+            className="group flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-[#995B43] py-1"
           >
-            <span className="font-serif text-xl md:text-2xl tracking-wide font-normal text-[#171817] group-hover:text-[#995B43] transition-colors">
+            <span className="font-serif text-2xl sm:text-3xl tracking-wide font-normal text-[#171817] group-hover:text-[#995B43] transition-colors leading-none">
               {SITE_CONFIG.ARTIST_NAME}
             </span>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-[#686760] font-medium hidden sm:block">
+            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-[#686760] font-medium mt-1">
               {SITE_CONFIG.ARTIST_DISCIPLINE}
             </span>
           </Link>
 
+          {/* Desktop Navigation Links */}
           <nav aria-label="Main Navigation" className="hidden md:flex items-center space-x-8">
             {SITE_CONFIG.NAV_LINKS.map((link) => {
               const isActive = pathname.startsWith(link.href);
@@ -74,56 +89,61 @@ export function SiteHeader() {
               href={SITE_CONFIG.ARTIST_INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Instagram Portfolio"
+              aria-label="Instagram Portfolio @jello.ry"
               className="text-[#686760] hover:text-[#995B43] transition-colors p-1"
             >
               <InstagramIcon className="w-4 h-4" />
             </a>
           </nav>
 
+          {/* Accessible Touch-Friendly Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
-            className="md:hidden p-2 text-[#171817] hover:text-[#995B43] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#995B43] cursor-pointer"
+            className="md:hidden w-11 h-11 flex items-center justify-center text-[#171817] hover:text-[#995B43] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#995B43] cursor-pointer touch-manipulation"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </PageContainer>
 
+      {/* Full-Screen Touch-Optimized Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-x-0 top-[73px] bottom-0 z-50 bg-[#F1EDE4] border-t border-[#171817]/10 px-6 py-8 flex flex-col justify-between animate-fadeIn">
-          <nav aria-label="Mobile Navigation" className="flex flex-col space-y-6">
+        <div className="md:hidden fixed inset-x-0 top-full bottom-0 h-[calc(100dvh-100%)] z-50 bg-[#F1EDE4] border-t border-[#171817]/10 px-6 py-8 flex flex-col justify-between overflow-y-auto animate-fadeIn">
+          <nav aria-label="Mobile Navigation" className="flex flex-col space-y-6 pt-2">
             {SITE_CONFIG.NAV_LINKS.map((link) => {
               const isActive = pathname.startsWith(link.href);
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`font-serif text-2xl tracking-wide transition-colors ${
+                  className={`font-serif text-2xl sm:text-3xl tracking-wide transition-colors py-1 flex items-center justify-between border-b border-[#171817]/10 pb-3.5 ${
                     isActive
                       ? "text-[#995B43] font-medium"
                       : "text-[#171817] hover:text-[#995B43]"
                   }`}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  <span className="text-xs font-mono uppercase tracking-widest text-[#A7A6A0]">
+                    {isActive ? "Current" : "→"}
+                  </span>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="space-y-4 pt-6 border-t border-[#171817]/10">
-            <p className="text-xs uppercase tracking-[0.15em] text-[#686760]">
+          <div className="space-y-4 pt-6 pb-8 border-t border-[#171817]/15">
+            <p className="text-xs uppercase tracking-[0.2em] text-[#686760] font-medium">
               {SITE_CONFIG.ARTIST_LOCATION}
             </p>
             <a
               href={SITE_CONFIG.ARTIST_INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 text-sm text-[#171817] hover:text-[#995B43] transition-colors"
+              className="inline-flex items-center space-x-2.5 text-base font-serif text-[#171817] hover:text-[#995B43] transition-colors py-2"
             >
-              <InstagramIcon className="w-4 h-4" />
+              <InstagramIcon className="w-5 h-5 text-[#995B43]" />
               <span>{SITE_CONFIG.ARTIST_INSTAGRAM_HANDLE}</span>
             </a>
           </div>
